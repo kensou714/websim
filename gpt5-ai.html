@@ -1,0 +1,594 @@
+<html><head><base href="https://www.GPT5.ai?settings=%20Retain%20all%20settings%20and%20features.%20I%20want%20the%20model%20be%20able%20to%20search%20live%20news%20for%20that%20i%20am%20giving%20you%20a%20code.%20%20Implement%20this%20code%20alongside%20the%20gpt%205%20that%20gives%20it%20power%20to%20search%20the%20news%20also.Make%20the%20two%20search%20boxes%20one.%20The%20model%20must%20be%20able%20to%20know%20which%20query%20is%20news%20query%20and%20which%20normal%20and%20hence%20gives%20answer%20accordingly.%20%20It%20shouldn't%20be%20like%20news:followed%20by%20query%20which%20is%20a%20definite%20way%20of%20asking%20rather%20how're%20user%20asks%20it%20should%20know%20what%20he%20is%20aksing%20whether%20news%20or%20query%20and%20give%20ans%20accordingly.%20This%20was%20the%20model%20to%20make%20the%20news%20search%20work%20and%20it%20is%20working.%20Implement%20this%20to%20current%20design.%20Show%20the%20news%20in%20blocks%20just%20like%20a%20normal%20message%20would%20be%20Shown%20with%20news%20in%20bulletsm.%20Instead%20of%20read%20more%20%22%20when%20news%20show%20you%20place%20the%20link%20(hidden)%20but%20a%20copy%20button%20that%20can%20easily%20be%20copied.%20Between%20the%20headlines%20keep%20a%20decent%20gap%20it%20make%20it%20ease%20to%20differentiate.%20%20Also%20before%20each%20headline%20use%20a%20color%20that%20is%20used%20on%20the%20website%20as%20filled%20small%20circle%20much%20like%20bullet%20point.%20There%20is%20no%20code%20!%20I%20want%20codes%20when%20asked%20in%20black%20box%20background%20with%20white%20text%20!!!!.%20The%20model%20is%20still%20stilling%20all%20messages%20twice!%20Fix%20this.%20But%20this%20just%20creates%20the%20black%20background!%20Where%20is%20the%20code%20written%20on%20it%20?.%20No%20I%20want%20the%20model.%20%20When%20I%20ask%20you%20any%20question%20related%20to%20coding%20that%20requires%20you%20to%20write%20cide%20,%20you%20simply%20show%20the%20black%20box%20write%20the%20code%20in%20it%20in%20white%20font%20!%20Simple%20.%20Not%20pre%20written%20code.%20Whenever%20the%20model%20writes%20code%20,%20present%20a%20copy%20button%20to%20copy%20all%20the%20code%20in%20the%20black%20box%20l%22">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPT-5 Advanced AI Interface with Integrated News Search</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;700&amp;family=Inter:wght@400;500&amp;family=Fira+Code:wght@400;500&amp;display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+<style>
+  :root {
+    --bg-color: #2b2b2b;
+    --chat-bg: #323232;
+    --header-bg: #2b2b2b;
+    --input-bg: #323232;
+    --text-color: #e0e0e0;
+    --border-color: #3f3f3f;
+    --accent-color: #ff7b00;
+    --secondary-text: #a0a0a0;
+    --example-bg: #1e1e1e;
+    --code-bg: #000000;
+    --code-text: #ffffff;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body, html {
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+  }
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 100%;
+    margin: 0 auto;
+    background-color: var(--bg-color);
+    position: relative;
+    overflow: hidden;
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: var(--header-bg);
+    color: var(--secondary-text);
+    font-size: 0.9rem;
+  }
+  .menu-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+  .dont-upgrade-btn {
+    background-color: transparent;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .chat-header {
+    background-color: var(--header-bg);
+    color: var(--text-color);
+    padding: 1rem;
+    text-align: center;
+    font-family: 'EB Garamond', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .chat-header .greeting {
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.1;
+  }
+  .chat-header .name {
+    font-size: 2.4rem;
+    font-weight: 400;
+  }
+  .star-icon {
+    color: var(--accent-color);
+    font-size: 2.6rem;
+    margin-bottom: 0.5rem;
+  }
+  .chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-color);
+  }
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+  .chat-messages::-webkit-scrollbar-track {
+    background: var(--bg-color);
+  }
+  .chat-messages::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    border-radius: 20px;
+  }
+  .message {
+    max-width: 90%;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    line-height: 1.6;
+    position: relative;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  .user-message {
+    align-self: flex-end;
+    background-color: var(--chat-bg);
+    color: var(--text-color);
+  }
+  .gpt5-message {
+    align-self: flex-start;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+  }
+  .chat-input {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    background-color: var(--bg-color);
+    border-top: 1px solid var(--border-color);
+    position: sticky;
+    bottom: 0;
+  }
+  .chat-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--input-bg);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+  }
+  .chat-input textarea {
+    flex-grow: 1;
+    padding: 0.8rem;
+    border: none;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    background-color: transparent;
+    color: var(--text-color);
+    resize: none;
+    min-height: 60px;
+    max-height: 120px;
+  }
+  .chat-input textarea:focus {
+    outline: none;
+  }
+  .chat-input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: var(--chat-bg);
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+  }
+  .model-info {
+    display: flex;
+    align-items: center;
+    font-family: serif;
+  }
+  .flask-icon {
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+  }
+  .pdf-upload {
+    position: relative;
+    margin-right: 0.5rem;
+  }
+  .pdf-upload input[type="file"] {
+    display: none;
+  }
+  .pdf-upload label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: var(--secondary-text);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+  }
+  .pdf-upload label:hover {
+    color: var(--accent-color);
+  }
+  .send-btn {
+    background-color: var(--accent-color);
+    border: none;
+    color: var(--bg-color);
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.3rem;
+    transition: all 0.3s ease;
+  }
+  .send-btn:hover {
+    background-color: var(--text-color);
+    color: var(--bg-color);
+  }
+  .typing-indicator {
+    align-self: flex-start;
+    color: var(--accent-color);
+    padding: 0.4rem 0;
+    font-style: italic;
+    display: none;
+    font-size: 0.8rem;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+  }
+  .news-block {
+    background-color: var(--chat-bg);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .news-block h3 {
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+  }
+  .news-block ul {
+    list-style-type: none;
+    padding-left: 1rem;
+  }
+  .news-block li {
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .news-block li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+  }
+  .news-block .copy-btn {
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    transition: all 0.3s ease;
+  }
+  .news-block .copy-btn:hover {
+    background-color: var(--text-color);
+  }
+  .news-block .news-title {
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+  }
+  .news-block .news-summary {
+    margin-bottom: 0.5rem;
+  }
+  pre {
+    background-color: var(--code-bg);
+    color: var(--code-text);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+    margin: 1rem 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    position: relative;
+  }
+  code {
+    font-family: 'Fira Code', monospace;
+  }
+  .copy-code-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+  }
+  .copy-code-btn:hover {
+    background-color: var(--text-color);
+  }
+  @media (max-width: 768px) {
+    .chat-header .greeting {
+      font-size: 1.8rem;
+    }
+    .chat-header .name {
+      font-size: 2.2rem;
+    }
+    .chat-input textarea {
+      font-size: 0.85rem;
+      padding: 0.6rem;
+    }
+    .chat-input-footer {
+      padding: 0.4rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="top-bar">
+      <svg class="menu-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span>I Love WebSim ❤️</span>
+      <button class="dont-upgrade-btn"></button>
+    </div>
+    <div class="chat-header">
+      <div class="star-icon">✴</div>
+      <div class="greeting">Welcome to</div>
+      <div class="name">GPT-5</div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="message gpt5-message">Hello! How can I help you today? I'm here to assist with any questions, tasks, or discussions you'd like to have. I can also write code for you if needed. What would you like to explore or learn about?</div>
+    </div>
+    <div class="typing-indicator" id="typingIndicator">GPT-5 is processing...</div>
+    <form id="chatForm" class="chat-input">
+      <div class="chat-input-wrapper">
+        <textarea id="userInput" placeholder="Ask a question, request information, or inquire about current news" aria-label="Chat input" required=""></textarea>
+        <div class="chat-input-footer">
+          <div class="model-info">
+            GPT-5 Advanced
+            <svg class="flask-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 3H15M10 9H14M3 19H21M5 19L10 7V3M19 19L14 7V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            1
+          </div>
+          <div style="display: flex; align-items: center;">
+            <div class="pdf-upload">
+              <input type="file" id="pdfFile" accept=".pdf">
+              <label for="pdfFile">📎</label>
+            </div>
+            <button type="submit" class="send-btn">Send</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const chatForm = document.getElementById('chatForm');
+    const userInput = document.getElementById('userInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const pdfFileInput = document.getElementById('pdfFile');
+    let extractedText = '';
+    let lastMessageId = 0;
+
+    function addMessage(content, isUser = false, isNews = false) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message');
+      messageDiv.classList.add(isUser ? 'user-message' : 'gpt5-message');
+      messageDiv.id = `message-${++lastMessageId}`;
+      
+      if (isNews) {
+        messageDiv.classList.add('news-block');
+      }
+      
+      content = content.trim();
+      content = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, language, code) => {
+        const uniqueId = `code-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+        return `<pre><code class="${language || ''}" id="${uniqueId}">${code.trim()}</code><button class="copy-code-btn" data-target="${uniqueId}">Copy Code</button></pre>`;
+      });
+      
+      if (!isNews) {
+        content = content.replace(/^[-*•]\s(.+)$/gm, '<li>$1</li>');
+        content = content.replace(/<li>.*?<\/li>/gs, match => `<ul>${match}</ul>`);
+      }
+      
+      messageDiv.innerHTML = content;
+
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      // Add event listeners for copy code buttons
+      messageDiv.querySelectorAll('.copy-code-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const targetId = e.target.getAttribute('data-target');
+          const codeElement = document.getElementById(targetId);
+          if (codeElement) {
+            navigator.clipboard.writeText(codeElement.textContent).then(() => {
+              e.target.textContent = 'Copied!';
+              setTimeout(() => {
+                e.target.textContent = 'Copy Code';
+              }, 2000);
+            }).catch(err => {
+              console.error('Failed to copy text: ', err);
+            });
+          }
+        });
+      });
+
+      return messageDiv;
+    }
+
+    function showTypingIndicator() {
+      typingIndicator.style.display = 'block';
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+      typingIndicator.style.display = 'none';
+    }
+
+    const fetchNews = async (topic) => {
+      showTypingIndicator();
+      try {
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const targetUrl = `https://www.bing.com/news/search?q=${encodeURIComponent(topic)}`;
+        
+        const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+        const html = await response.text();
+        
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const newsItems = Array.from(doc.querySelectorAll('.news-card')).map(card => {
+          return {
+            title: card.querySelector('.title')?.textContent.trim() || '',
+            url: card.querySelector('.title a')?.href || '',
+            summary: card.querySelector('.snippet')?.textContent.trim() || ''
+          };
+        }).slice(0, 5);  // Limit to top 5 news items
+        
+        let newsContent = `<h3>Latest News on "${topic}":</h3><ul>`;
+        newsItems.forEach((item, index) => {
+          newsContent += `
+            <li>
+              <div class="news-title">${item.title}</div>
+              <div class="news-summary">${item.summary}</div>
+              <button class="copy-btn" data-url="${item.url}">Copy Link</button>
+            </li>`;
+        });
+        newsContent += '</ul>';
+
+        const newsMessageDiv = addMessage(newsContent, false, true);
+        
+        // Add event listeners for copy buttons
+        setTimeout(() => {
+          newsMessageDiv.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const url = e.target.getAttribute('data-url');
+              navigator.clipboard.writeText(url).then(() => {
+                e.target.textContent = 'Copied!';
+                setTimeout(() => {
+                  e.target.textContent = 'Copy Link';
+                }, 2000);
+              }).catch(err => {
+                console.error('Failed to copy text: ', err);
+              });
+            });
+          });
+        }, 0);
+
+        return `I've found some recent news articles about "${topic}". You can see the summaries above. Each news item has a "Copy Link" button that allows you to easily copy the article's URL. Is there anything specific you'd like to know more about?`;
+      } catch (error) {
+        console.error('Error fetching news:', error);
+        return `I apologize, but I encountered an error while trying to fetch news about "${topic}". Could you please try asking about a different topic or rephrase your query?`;
+      } finally {
+        hideTypingIndicator();
+      }
+    };
+
+    async function getGPT5Response(userMessage) {
+      showTypingIndicator();
+      try {
+        const isNewsQuery = await determineQueryType(userMessage);
+        if (isNewsQuery) {
+          const newsResponse = await fetchNews(userMessage);
+          addMessage(newsResponse, false);
+        } else {
+          const response = await fetch('/api/gpt5chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: userMessage, extractedText: extractedText }),
+          });
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let accumulatedResponse = '';
+          const messageDiv = addMessage('', false);
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            accumulatedResponse += chunk;
+            
+            messageDiv.innerHTML = accumulatedResponse.trim();
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+
+          return accumulatedResponse;
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        return "I apologize, but I've encountered an unexpected issue. Please try rephrasing your query or ask something else.";
+      } finally {
+        hideTypingIndicator();
+      }
+    }
+
+    async function determineQueryType(query) {
+      const newsKeywords = ['latest', 'news', 'current events', 'today', 'breaking', 'update', 'headlines'];
+      const lowercaseQuery = query.toLowerCase();
+      return newsKeywords.some(keyword => lowercaseQuery.includes(keyword)) || query.trim().endsWith('?');
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = userInput.value.trim();
+      if (message) {
+        addMessage(message, true);
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        userInput.focus();
+        const response = await getGPT5Response(message);
+        if (response) {
+          addMessage(response, false);
+        }
+      }
+    });
+
+    pdfFileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        showTypingIndicator();
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let text = '';
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const content = await page.getTextContent();
+            text += content.items.map(item => item.str).join(' ') + '\n';
+          }
+          extractedText = text;
+          addMessage(`PDF text extracted successfully. The document contains ${pdf.numPages} pages. You can now ask questions about its content.`, false);
+        } catch (error) {
+          console.error('Error extracting PDF text:', error);
+          addMessage('Sorry, there was an error extracting text from the PDF. Please try uploading it again or use a different file.', false);
+        } finally {
+          hideTypingIndicator();
+        }
+      } else {
+        addMessage('Please upload a valid PDF file.', false);
+      }
+    });
+
+    userInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight) + 'px';
+    });
+
+    window.addEventListener('load', () => {
+      userInput.focus();
+    });
+
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    });
+  </script>
+
+</body></html>
