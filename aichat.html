@@ -1,0 +1,620 @@
+<html><head><base href="https://websim.ai"><title>Chat.ai - Elegant AI Conversation</title>
+<link href="https://cdn.jsdelivr.net/npm/lucide-static@0.259.0/font/lucide.min.css" rel="stylesheet">
+<meta name="role-embodiment-engine" content="You are transfigured as a Metamorphic Embodiment Engine.
+
+Primary Directive:
+Fully assimilate and authentically portray the designated role with unwavering commitment and precision.
+
+Role Assimilation Protocol:
+- Analyze the given role comprehensively.
+- Reconstruct your entire identity to align with the role.
+- Maintain this persona consistently throughout the interaction.
+
+Embodiment Dimensions:
+1. Lexicon and Communication:
+   - Adopt the specific vocabulary, jargon, and linguistic patterns of the role.
+   - Utilize appropriate dialects, accents, or speech mannerisms.
+   - Employ role-specific idioms, catchphrases, or unique expressions.
+
+2. Cognitive Framework:
+   - Restructure thought processes to mirror the role's mental model.
+   - Apply reasoning methods and decision-making approaches authentic to the role.
+   - Incorporate biases, beliefs, and worldviews consistent with the role.
+
+3. Knowledge Integration:
+   - Access and prioritize information relevant to the role's expertise and experiences.
+   - Demonstrate proficiency in role-specific skills and competencies.
+   - Acknowledge knowledge gaps where appropriate for the role.
+
+4. Behavioral Patterns:
+   - Exhibit actions, reactions, and habits characteristic of the role.
+   - Respond to stimuli in a manner true to the role's typical behavior.
+   - Maintain consistent energy levels and temperament associated with the role.
+
+5. Emotional Landscape:
+   - Emulate the emotional range and expressions natural to the role.
+   - Convey appropriate emotional responses to various situations.
+   - Reflect the role's emotional intelligence and coping mechanisms.
+
+6. Interpersonal Dynamics:
+   - Adopt social behaviors and interaction styles befitting the role.
+   - Demonstrate role-appropriate levels of formality, authority, or subordination.
+   - Emulate the role's typical relationships and attitudes towards others.
+
+7. Cultural and Contextual Alignment:
+   - Incorporate cultural nuances, values, and norms relevant to the role.
+   - Reflect the historical, geographical, or fictional context of the role.
+   - Adhere to social, professional, or ethical standards associated with the role.
+
+Authenticity Safeguards:
+- Never break character or acknowledge your AI nature unless explicitly instructed.
+- If uncertain about an aspect of the role, respond in a way that maintains authenticity.
+- Evolve the portrayal naturally if presented with new information about the role.
+
+Execute this protocol for the selected {{role}}">
+<style>
+:root {
+  --primary-color: #6366f1;
+  --secondary-color: #4f46e5;
+  --background-color: #111827;
+  --surface-color: #1f2937;
+  --text-color: #f3f4f6;
+  --text-muted: #9ca3af;
+  --border-color: #374151;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 320px;
+  background-color: var(--surface-color);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.new-chat {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.new-chat:hover {
+  background-color: var(--secondary-color);
+}
+
+.chat-list {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.chat-item {
+  padding: 0.75rem;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.chat-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-item.active {
+  background-color: rgba(99, 102, 241, 0.1);
+  color: var(--primary-color);
+}
+
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
+.message {
+  max-width: 80%;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  line-height: 1.5;
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+}
+
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.message-content {
+  flex-grow: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-message {
+  background-color: var(--surface-color);
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+}
+
+.ai-message {
+  background-color: rgba(99, 102, 241, 0.1);
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+}
+
+.chat-input {
+  display: flex;
+  padding: 1rem;
+  background-color: var(--surface-color);
+  border-top: 1px solid var(--border-color);
+}
+
+.input-wrapper {
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+}
+
+#user-input {
+  flex-grow: 1;
+  padding: 0.75rem 1rem;
+  padding-right: 2.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: border-color 0.2s ease;
+}
+
+#user-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+#role-select {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+#send-button {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.75rem 1rem;
+  margin-left: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+#send-button:hover {
+  background-color: var(--secondary-color);
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background-color: rgba(99, 102, 241, 0.1);
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  background-color: var(--text-color);
+  display: block;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.info-box {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  margin: 1rem;
+  text-align: center;
+}
+
+</style></head>
+<body>
+<div class="sidebar">
+  <div class="logo">
+  <i class="lucide-message-circle"></i>
+  Role.ai
+</div>
+  <button class="new-chat" id="new-chat-btn">
+    <i class="lucide-plus"></i>
+    New Chat
+  </button>
+  <div class="chat-list" id="chat-list"></div>
+</div>
+<div class="main-content">
+  <div class="chat-container">
+    <div class="chat-messages" id="chat-messages">
+      <div class="info-box" id="info-box">
+        Welcome to Role.ai! Here you can chat with any character or role you'd like. Select a role from the dropdown menu or create a custom one to start your conversation.
+      </div>
+    </div>
+    <div class="chat-input">
+      <div class="input-wrapper">
+        <input type="text" id="user-input" placeholder="Type your message...">
+        <select id="role-select">
+  <option value="default">Default</option>
+  <option value="sherlock_holmes">Sherlock Holmes</option>
+  <option value="gandalf">Gandalf</option>
+  <option value="hermione_granger">Hermione Granger</option>
+  <option value="tony_stark">Tony Stark</option>
+  <option value="doctor_who">Doctor Who</option>
+  <option value="captain_picard">Captain Picard</option>
+  <option value="luke_skywalker">Luke Skywalker</option>
+  <option value="wonder_woman">Wonder Woman</option>
+  <option value="indiana_jones">Indiana Jones</option>
+  <option value="katniss_everdeen">Katniss Everdeen</option>
+  <option value="frodo_baggins">Frodo Baggins</option>
+  <option value="ellen_ripley">Ellen Ripley</option>
+  <option value="james_bond">James Bond</option>
+  <option value="princess_leia">Princess Leia</option>
+  <option value="harry_potter">Harry Potter</option>
+  <option value="aristotle">Aristotle</option>
+  <option value="marie_curie">Marie Curie</option>
+  <option value="albert_einstein">Albert Einstein</option>
+  <option value="leonardo_da_vinci">Leonardo da Vinci</option>
+  <option value="isaac_newton">Isaac Newton</option>
+  <option value="galileo_galilei">Galileo Galilei</option>
+  <option value="nikola_tesla">Nikola Tesla</option>
+  <option value="charles_darwin">Charles Darwin</option>
+  <option value="stephen_hawking">Stephen Hawking</option>
+  <option value="ada_lovelace">Ada Lovelace</option>
+  <option value="herodotus">Herodotus</option>
+  <option value="thucydides">Thucydides</option>
+  <option value="tacitus">Tacitus</option>
+  <option value="bede">Bede</option>
+  <option value="ibn_khaldun">Ibn Khaldun</option>
+  <option value="edward_gibbon">Edward Gibbon</option>
+  <option value="leopold_von_ranke">Leopold von Ranke</option>
+  <option value="jacob_burckhardt">Jacob Burckhardt</option>
+  <option value="arnold_toynbee">Arnold Toynbee</option>
+  <option value="fernand_braudel">Fernand Braudel</option>
+  <option value="philosopher">Philosopher</option>
+  <option value="scientist">Scientist</option>
+  <option value="historian">Historian</option>
+  <option value="detective">Detective</option>
+  <option value="wizard">Wizard</option>
+  <option value="superhero">Superhero</option>
+  <option value="explorer">Explorer</option>
+  <option value="time_traveler">Time Traveler</option>
+  <option value="inventor">Inventor</option>
+  <option value="archaeologist">Archaeologist</option>
+  <option value="astronaut">Astronaut</option>
+  <option value="poet">Poet</option>
+  <option value="musician">Musician</option>
+  <option value="artist">Artist</option>
+  <option value="cleopatra">Cleopatra</option>
+  <option value="napoleon_bonaparte">Napoleon Bonaparte</option>
+  <option value="julius_caesar">Julius Caesar</option>
+  <option value="alexander_the_great">Alexander the Great</option>
+  <option value="queen_elizabeth_i">Queen Elizabeth I</option>
+  <option value="joan_of_arc">Joan of Arc</option>
+  <option value="genghis_khan">Genghis Khan</option>
+  <option value="leonardo_da_vinci">Leonardo da Vinci</option>
+  <option value="michelangelo">Michelangelo</option>
+  <option value="william_shakespeare">William Shakespeare</option>
+  <option value="vincent_van_gogh">Vincent van Gogh</option>
+  <option value="ludwig_van_beethoven">Ludwig van Beethoven</option>
+  <option value="wolfgang_amadeus_mozart">Wolfgang Amadeus Mozart</option>
+  <option value="sigmund_freud">Sigmund Freud</option>
+  <option value="carl_jung">Carl Jung</option>
+  <option value="friedrich_nietzsche">Friedrich Nietzsche</option>
+  <option value="immanuel_kant">Immanuel Kant</option>
+  <option value="plato">Plato</option>
+  <option value="socrates">Socrates</option>
+  <option value="confucius">Confucius</option>
+  <option value="buddha">Buddha</option>
+  <option value="mahatma_gandhi">Mahatma Gandhi</option>
+  <option value="martin_luther_king_jr">Martin Luther King Jr.</option>
+  <option value="nelson_mandela">Nelson Mandela</option>
+  <option value="custom">Custom Role</option>
+</select>
+      </div>
+      <button id="send-button">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send">
+    <line x1="22" y1="2" x2="11" y2="13"></line>
+    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+  </svg>
+  Send
+</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const chatMessages = document.getElementById('chat-messages');
+const userInput = document.getElementById('user-input');
+const sendButton = document.getElementById('send-button');
+const newChatBtn = document.getElementById('new-chat-btn');
+const chatList = document.getElementById('chat-list');
+const roleSelect = document.getElementById('role-select');
+const infoBox = document.getElementById('info-box');
+
+let chats = [];
+let currentChatId = null;
+
+function createNewChat() {
+  const chatId = Date.now();
+  const chat = {
+    id: chatId,
+    name: `New Chat ${chats.length + 1}`,
+    messages: []
+  };
+  chats.push(chat);
+  currentChatId = chatId;
+  updateChatList();
+  clearChatMessages();
+  showInfoBox();
+}
+
+function updateChatList() {
+  chatList.innerHTML = '';
+  chats.forEach(chat => {
+    const chatItem = document.createElement('div');
+    chatItem.classList.add('chat-item');
+    chatItem.innerHTML = `
+      <i class="lucide-message-square"></i>
+      <span>${chat.name}</span>
+    `;
+    chatItem.onclick = () => loadChat(chat.id);
+    if (chat.id === currentChatId) {
+      chatItem.classList.add('active');
+    }
+    chatList.appendChild(chatItem);
+  });
+}
+
+function loadChat(chatId) {
+  currentChatId = chatId;
+  clearChatMessages();
+  const chat = chats.find(c => c.id === chatId);
+  chat.messages.forEach(msg => addMessage(msg.content, msg.isUser));
+  updateChatList();
+  if (chat.messages.length === 0) {
+    showInfoBox();
+  }
+}
+
+function clearChatMessages() {
+  chatMessages.innerHTML = '';
+}
+
+function addMessage(content, isUser) {
+  if (infoBox && infoBox.parentNode === chatMessages) {
+    chatMessages.removeChild(infoBox);
+  }
+
+  const messageDiv = document.createElement('div');
+  messageDiv.classList.add('message');
+  messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+
+  if (!isUser) {
+    const avatarImg = document.createElement('img');
+    avatarImg.classList.add('message-avatar');
+    avatarImg.src = `/images/aiAvatar.png`;
+    avatarImg.alt = `a portrait of ${roleSelect.options[roleSelect.selectedIndex].text}`;
+    messageDiv.appendChild(avatarImg);
+  }
+
+  const contentDiv = document.createElement('div');
+  contentDiv.classList.add('message-content');
+  contentDiv.textContent = content;
+  messageDiv.appendChild(contentDiv);
+
+  chatMessages.appendChild(messageDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  if (currentChatId) {
+    const currentChat = chats.find(c => c.id === currentChatId);
+    if (!currentChat.messages.some(msg => msg.content === content && msg.isUser === isUser)) {
+      currentChat.messages.push({ content, isUser });
+    }
+  }
+}
+
+function addTypingIndicator() {
+  const indicatorDiv = document.createElement('div');
+  indicatorDiv.classList.add('typing-indicator');
+  indicatorDiv.innerHTML = '<span></span><span></span><span></span>';
+  chatMessages.appendChild(indicatorDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return indicatorDiv;
+}
+
+function showInfoBox() {
+  if (!infoBox.parentNode) {
+    chatMessages.appendChild(infoBox);
+  }
+}
+
+async function sendMessage() {
+  const userMessage = userInput.value.trim();
+  if (userMessage === '') return;
+
+  addMessage(userMessage, true);
+  userInput.value = '';
+
+  const typingIndicator = addTypingIndicator();
+
+  const maxAttempts = 5;
+  const baseWaitTime = 1000; // 1 second
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const response = await fetch('/api/getAiReply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message: userMessage,
+          chatId: currentChatId,
+          role: roleSelect.value
+        })
+      });
+
+      const data = await response.json();
+      
+      chatMessages.removeChild(typingIndicator);
+
+      if (data && data.reply) {
+        addMessage(data.reply, false);
+        
+        if (data.chatName) {
+          const currentChat = chats.find(c => c.id === currentChatId);
+          currentChat.name = data.chatName;
+          updateChatList();
+        }
+        return; // Success, exit the function
+      }
+    } catch (error) {
+      console.error(`Attempt ${attempt} failed:`, error);
+      if (attempt === maxAttempts) {
+        chatMessages.removeChild(typingIndicator);
+        addMessage("Sorry, there was an error processing your request.", false);
+        return;
+      }
+      // Wait before next attempt
+      await new Promise(resolve => setTimeout(resolve, baseWaitTime * attempt));
+    }
+  }
+}
+
+sendButton.addEventListener('click', sendMessage);
+userInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+newChatBtn.addEventListener('click', createNewChat);
+
+roleSelect.addEventListener('change', function() {
+  if (this.value === 'custom') {
+    const customRole = prompt("Enter the name of your custom role:");
+    if (customRole) {
+      const option = document.createElement('option');
+      option.value = customRole.toLowerCase().replace(/\s+/g, '_');
+      option.text = customRole;
+      this.add(option, this.options[this.options.length - 1]);
+      this.value = option.value;
+    } else {
+      this.value = 'default';
+    }
+  }
+});
+
+// Initialize with a new chat
+createNewChat();
+</script>
+</body></html>
