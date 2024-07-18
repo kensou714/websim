@@ -1,0 +1,493 @@
+<html><head><base href="https://%E5%88%A0%E9%99%A4%E2%80%9DWebDAW.js%E2%80%9C%E5%AD%97%E7%AC%A6%E4%B8%B2"><title>现代电子鼓音序器</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.container {
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+h1 {
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 20px;
+  color: #bb86fc;
+}
+.sequencer {
+  width: 100%;
+  max-width: 1000px;
+}
+.sequencer-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  width: 100%;
+}
+.instrument-label {
+  width: 100px;
+  text-align: right;
+  margin-right: 10px;
+  font-size: 0.9em;
+  color: #03dac6;
+  flex-shrink: 0;
+}
+.steps {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 3px;
+  flex-grow: 1;
+}
+.step {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  min-width: 25px;
+  min-height: 25px;
+  background-color: #2a2a2a;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+.step.active {
+  background-color: #bb86fc;
+  box-shadow: 0 0 8px #bb86fc;
+}
+.step.current {
+  border-color: #03dac6;
+}
+.step:nth-child(4n+1) {
+  background-color: #4a4a4a;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 25px;
+}
+button {
+  padding: 10px 20px;
+  font-size: 0.9em;
+  cursor: pointer;
+  background-color: #03dac6;
+  color: #000000;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+button:hover {
+  background-color: #018786;
+  box-shadow: 0 4px 12px rgba(3, 218, 198, 0.3);
+}
+#clearAll {
+  background-color: #cf6679;
+}
+#clearAll:hover {
+  background-color: #b4505f;
+  box-shadow: 0 4px 12px rgba(207, 102, 121, 0.3);
+}
+.tempo-control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+.tempo-control label {
+  color: #03dac6;
+  font-size: 0.9em;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 180px;
+  height: 4px;
+  background: #2a2a2a;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+input[type="range"]:hover {
+  opacity: 1;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #bb86fc;
+  cursor: pointer;
+  border-radius: 50%;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #bb86fc;
+  cursor: pointer;
+  border-radius: 50%;
+}
+@media (max-width: 768px) {
+  .instrument-label {
+    width: 70px;
+    font-size: 0.8em;
+  }
+  .step {
+    min-width: 20px;
+    min-height: 20px;
+  }
+  button {
+    padding: 8px 16px;
+    font-size: 0.8em;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>现代电子鼓音序器</h1>
+  <div class="sequencer" id="sequencer">
+    <div class="sequencer-row">
+      <div class="instrument-label">底鼓</div>
+      <div class="steps" id="kickSteps"></div>
+    </div>
+    <div class="sequencer-row">
+      <div class="instrument-label">军鼓</div>
+      <div class="steps" id="snareSteps"></div>
+    </div>
+    <div class="sequencer-row">
+      <div class="instrument-label">开放踩镲</div>
+      <div class="steps" id="hihatOpenSteps"></div>
+    </div>
+    <div class="sequencer-row">
+      <div class="instrument-label">闭合踩镲</div>
+      <div class="steps" id="hihatClosedSteps"></div>
+    </div>
+    <div class="sequencer-row">
+      <div class="instrument-label">大镲</div>
+      <div class="steps" id="crashSteps"></div>
+    </div>
+  </div>
+  <div class="tempo-control">
+    <label for="tempo">速度：</label>
+    <input type="range" id="tempo" min="60" max="180" value="120">
+    <span id="tempoValue">120 BPM</span>
+  </div>
+  <div class="controls">
+    <button id="playPause">播放</button>
+    <button id="stop">停止</button>
+    <button id="clearAll">清除全部</button>
+  </div>
+</div>
+
+<script>
+class Sequencer {
+  constructor() {
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    this.isPlaying = false;
+    this.currentStep = 0;
+    this.tempo = 120;
+    this.instruments = [
+      { name: 'kick', steps: Array(16).fill(false) },
+      { name: 'snare', steps: Array(16).fill(false) },
+      { name: 'hihatOpen', steps: Array(16).fill(false) },
+      { name: 'hihatClosed', steps: Array(16).fill(false) },
+      { name: 'crash', steps: Array(16).fill(false) }
+    ];
+    
+    this.setupUI();
+    this.setupEventListeners();
+  }
+
+  setupUI() {
+    this.instruments.forEach(instrument => {
+      const stepsEl = document.getElementById(`${instrument.name}Steps`);
+      instrument.steps.forEach((_, i) => {
+        const button = document.createElement('button');
+        button.classList.add('step');
+        button.dataset.instrument = instrument.name;
+        button.dataset.step = i;
+        if (i % 4 === 0) {
+          button.style.backgroundColor = '#4a4a4a';
+        }
+        stepsEl.appendChild(button);
+      });
+    });
+  }
+
+  setupEventListeners() {
+    document.getElementById('sequencer').addEventListener('click', (e) => {
+      if (e.target.classList.contains('step')) {
+        const instrument = e.target.dataset.instrument;
+        const step = parseInt(e.target.dataset.step);
+        this.toggleStep(instrument, step);
+      }
+    });
+
+    document.getElementById('playPause').addEventListener('click', () => this.togglePlay());
+    document.getElementById('stop').addEventListener('click', () => this.stop());
+    document.getElementById('clearAll').addEventListener('click', () => this.clearAll());
+
+    const tempoSlider = document.getElementById('tempo');
+    const tempoValue = document.getElementById('tempoValue');
+    tempoSlider.addEventListener('input', (e) => {
+      this.tempo = parseInt(e.target.value);
+      tempoValue.textContent = `${this.tempo} BPM`;
+    });
+  }
+
+  toggleStep(instrument, step) {
+    const instrumentObj = this.instruments.find(i => i.name === instrument);
+    instrumentObj.steps[step] = !instrumentObj.steps[step];
+    const stepElement = document.querySelector(`[data-instrument="${instrument}"][data-step="${step}"]`);
+    stepElement.classList.toggle('active');
+    if (!stepElement.classList.contains('active')) {
+      stepElement.style.backgroundColor = step % 4 === 0 ? '#4a4a4a' : '#2a2a2a';
+    }
+  }
+
+  togglePlay() {
+    if (this.isPlaying) {
+      this.pause();
+    } else {
+      this.play();
+    }
+  }
+
+  play() {
+    this.isPlaying = true;
+    this.nextStepTime = this.audioContext.currentTime;
+    this.scheduler();
+    document.getElementById('playPause').textContent = '暂停';
+  }
+
+  pause() {
+    this.isPlaying = false;
+    document.getElementById('playPause').textContent = '播放';
+  }
+
+  stop() {
+    this.isPlaying = false;
+    this.currentStep = 0;
+    document.getElementById('playPause').textContent = '播放';
+    this.updateCurrentStepUI();
+  }
+
+  clearAll() {
+    this.instruments.forEach(instrument => {
+      instrument.steps.fill(false);
+    });
+    document.querySelectorAll('.step').forEach(step => {
+      step.classList.remove('active');
+      const stepIndex = parseInt(step.dataset.step);
+      step.style.backgroundColor = stepIndex % 4 === 0 ? '#4a4a4a' : '#2a2a2a';
+    });
+  }
+
+  scheduler() {
+    while (this.nextStepTime < this.audioContext.currentTime + 0.1) {
+      this.playCurrentStep();
+      this.nextStep();
+    }
+    if (this.isPlaying) {
+      requestAnimationFrame(() => this.scheduler());
+    }
+  }
+
+  playCurrentStep() {
+    this.instruments.forEach(instrument => {
+      if (instrument.steps[this.currentStep]) {
+        this[`play${instrument.name.charAt(0).toUpperCase() + instrument.name.slice(1)}`](this.nextStepTime);
+      }
+    });
+    this.updateCurrentStepUI();
+  }
+
+  nextStep() {
+    this.currentStep = (this.currentStep + 1) % 16;
+    this.nextStepTime += 60 / this.tempo / 4; // 16th notes
+  }
+
+  updateCurrentStepUI() {
+    document.querySelectorAll('.step').forEach((step, index) => {
+      step.classList.toggle('current', index % 16 === this.currentStep);
+    });
+  }
+
+  playKick(time) {
+    const osc = this.audioContext.createOscillator();
+    const gainOsc = this.audioContext.createGain();
+    const gainEnv = this.audioContext.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(150, time);
+    osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
+
+    gainOsc.gain.setValueAtTime(1, time);
+    gainOsc.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
+
+    gainEnv.gain.setValueAtTime(1, time);
+    gainEnv.gain.exponentialRampToValueAtTime(0.001, time + 0.5);
+
+    osc.connect(gainOsc).connect(gainEnv).connect(this.audioContext.destination);
+
+    osc.start(time);
+    osc.stop(time + 0.5);
+  }
+
+  playSnare(time) {
+    const noise = this.audioContext.createBufferSource();
+    const noiseFilter = this.audioContext.createBiquadFilter();
+    const noiseEnvelope = this.audioContext.createGain();
+    const osc = this.audioContext.createOscillator();
+    const oscEnvelope = this.audioContext.createGain();
+
+    const bufferSize = this.audioContext.sampleRate * 0.5;
+    const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const output = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = Math.random() * 2 - 1;
+    }
+
+    noise.buffer = buffer;
+    noiseFilter.type = 'highpass';
+    noiseFilter.frequency.value = 1000;
+    noiseEnvelope.gain.setValueAtTime(1, time);
+    noiseEnvelope.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(100, time);
+    oscEnvelope.gain.setValueAtTime(0.7, time);
+    oscEnvelope.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
+
+    noise.connect(noiseFilter).connect(noiseEnvelope);
+    osc.connect(oscEnvelope);
+    noiseEnvelope.connect(this.audioContext.destination);
+    oscEnvelope.connect(this.audioContext.destination);
+
+    noise.start(time);
+    osc.start(time);
+    noise.stop(time + 0.2);
+    osc.stop(time + 0.2);
+  }
+
+  playHihatOpen(time) {
+    this.playHihat(time, 0.3);
+  }
+
+  playHihatClosed(time) {
+    this.playHihat(time, 0.1);
+  }
+
+  playHihat(time, duration) {
+    const fundamental = 40;
+    const ratios = [2, 3, 4.16, 5.43, 6.79, 8.21];
+    
+    const bandpass = this.audioContext.createBiquadFilter();
+    bandpass.type = "bandpass";
+    bandpass.frequency.value = 10000;
+
+    const highpass = this.audioContext.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 7000;
+
+    const output = this.audioContext.createGain();
+    output.gain.setValueAtTime(0.00001, time);
+    output.gain.exponentialRampToValueAtTime(1, time + 0.02);
+    output.gain.exponentialRampToValueAtTime(0.3, time + 0.03);
+    output.gain.exponentialRampToValueAtTime(0.00001, time + duration);
+
+    ratios.forEach(ratio => {
+      const osc = this.audioContext.createOscillator();
+      const gain = this.audioContext.createGain();
+      
+      osc.type = "square";
+      osc.frequency.value = fundamental * ratio;
+      gain.gain.value = 1 / ratios.length;
+
+      osc.connect(gain).connect(bandpass).connect(highpass).connect(output).connect(this.audioContext.destination);
+      osc.start(time);
+      osc.stop(time + duration);
+    });
+  }
+
+  playCrash(time) {
+    const fundamental = 100;
+    const ratios = [1, 1.4471, 1.6170, 1.9265, 2.5028, 2.6637];
+    const bandpass = this.audioContext.createBiquadFilter();
+    bandpass.type = "bandpass";
+    bandpass.frequency.value = 8000;
+
+    const highpass = this.audioContext.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 5000;
+
+    const output = this.audioContext.createGain();
+    output.gain.setValueAtTime(0.00001, time);
+    output.gain.exponentialRampToValueAtTime(1, time + 0.02);
+    output.gain.exponentialRampToValueAtTime(0.3, time + 0.03);
+    output.gain.exponentialRampToValueAtTime(0.00001, time + 1.5);
+
+    ratios.forEach(ratio => {
+      const osc = this.audioContext.createOscillator();
+      const gain = this.audioContext.createGain();
+      
+      osc.type = "triangle";
+      osc.frequency.value = fundamental * ratio;
+      gain.gain.value = 0.1 / ratios.length;
+
+      osc.connect(gain).connect(bandpass).connect(highpass).connect(output).connect(this.audioContext.destination);
+      osc.start(time);
+      osc.stop(time + 1.5);
+    });
+
+    // 添加白噪声来增强大镲的效果
+    const bufferSize = this.audioContext.sampleRate * 1.5;
+    const noiseBuffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
+    const noise = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      noise[i] = Math.random() * 2 - 1;
+    }
+
+    const noiseSource = this.audioContext.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+
+    const noiseGain = this.audioContext.createGain();
+    noiseGain.gain.setValueAtTime(1, time);
+    noiseGain.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
+
+    const noiseFilter = this.audioContext.createBiquadFilter();
+    noiseFilter.type = "highpass";
+    noiseFilter.frequency.value = 8000;
+
+    noiseSource.connect(noiseFilter).connect(noiseGain).connect(this.audioContext.destination);
+    noiseSource.start(time);
+    noiseSource.stop(time + 1.5);
+  }
+}
+
+const sequencer = new Sequencer();
+</script>
+</body></html>
